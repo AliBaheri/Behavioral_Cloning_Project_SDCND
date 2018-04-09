@@ -1,6 +1,7 @@
 import argparse
 import base64
 import json
+import cv2
 
 import numpy as np
 import socketio
@@ -18,13 +19,36 @@ from keras.preprocessing.image import ImageDataGenerator, array_to_img, img_to_a
 # Fix error with Keras and TensorFlow
 import tensorflow as tf
 tf.python.control_flow_ops = tf
-from model import preprocess_image
 
+# import preprocess from model.py
+#from model import preprocess_image
 
 sio = socketio.Server()
 app = Flask(__name__)
 model = None
 prev_image_array = None
+
+def preprocess_image(img):
+    '''
+    Method for preprocessing images: this method is the same used in drive.py, except this version uses
+    BGR to YUV and drive.py uses RGB to YUV (due to using cv2 to read the image here, where drive.py images are 
+    received in RGB)
+    '''
+    # original shape: 160x320x3, input shape for neural net: 66x200x3
+    # crop to 105x320x3
+    #new_img = img[35:140,:,:]
+    # crop to 40x320x3
+    new_img = img[50:140,:,:]
+    # apply subtle blur
+    new_img = cv2.GaussianBlur(new_img, (3,3), 0)
+    # scale to 66x200x3 (same as nVidia)
+    new_img = cv2.resize(new_img,(200, 66), interpolation = cv2.INTER_AREA)
+    # scale to ?x?x3
+    #new_img = cv2.resize(new_img,(80, 10), interpolation = cv2.INTER_AREA)
+    # convert to YUV color space (as nVidia paper suggests)
+    ####### REMEMBER: IMAGES FROM SIMULATOR COME IN RGB!!!!!! #######
+    new_img = cv2.cvtColor(new_img, cv2.COLOR_RGB2YUV)
+    return new_img
 
 @sio.on('telemetry')
 def telemetry(sid, data):
@@ -34,23 +58,18 @@ def telemetry(sid, data):
     throttle = data["throttle"]
     # The current speed of the car
     speed = data["speed"]
-    speed = float(speed)
     # The current image from the center camera of the car
     imgString = data["image"]
     image = Image.open(BytesIO(base64.b64decode(imgString)))
     image_array = np.asarray(image)
-
-    # Add the preprocessing step
-    image_array = preprocess_image(image_array)
-
-    transformed_image_array = image_array[None, :, :, :]
+    img = preprocess_image(image_array)
+    transformed_image_array = img[None, :, :, :]
     # This model currently assumes that the features of the model are just the images. Feel free to change this.
     steering_angle = float(model.predict(transformed_image_array, batch_size=1))
-
     # The driving model currently just outputs a constant throttle. Feel free to edit this.
-    throttle = (17.0 - speed)*0.5
-
-    print(steering_angle, throttle)
+    throttle = 0.2
+    if float(speed) < 10:
+        throttle = 1
     send_control(steering_angle, throttle)
 
 
@@ -73,8 +92,14 @@ if __name__ == '__main__':
     help='Path to model definition json. Model weights should be on the same path.')
     args = parser.parse_args()
     with open(args.model, 'r') as jfile:
-        # model = model_from_json(json.loads(jfile.read()))
+        # NOTE: if you saved the file by calling json.dump(model.to_json(), ...)
+        # then you will have to call:
+        #
+        #   model = model_from_json(json.loads(jfile.read()))\
+        #
+        # instead.
         model = model_from_json(jfile.read())
+
 
     model.compile("adam", "mse")
     weights_file = args.model.replace('json', 'h5')
