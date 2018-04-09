@@ -1,74 +1,51 @@
-# About this project
-This repository contains code for a project I did as a part of [Udacity's Self Driving Car Nano Degree Program](https://www.udacity.com/drive). We had to train a car to drive itself in a video game. The car was trained to drive itself using a deep neural network. Scroll down to see the demo video.
+## **Behavioral Cloning** 
 
-# Exploring the Dataset
-I used the dataset provided by Udacity. About 8000 images. I did not record images myself.
+**Behavioral Cloning Project**
 
-The dataset contains JPG images of dimensions 160x320x3. Here are some sample images from the dataset.
+The goals / steps of this project are the following:
+* Use the simulator to collect data of good driving behavior
+* Build, a convolution neural network in Keras that predicts steering angles from images
+* Train and validate the model with a training and validation set
+* Test that the model successfully drives around track one without leaving the road
+* Summarize the results with a written report
 
-![Sample Images](assets/sample_images.png)
+### My project includes the following files:
+* model.py containing the script to create and train the model
+* drive.py for driving the car in autonomous mode
+* model.h5 containing a trained convolution neural network 
+* writeup_report.md or writeup_report.pdf summarizing the results
 
-## Unbalanced Data
-Most of the steering angles are close to zero, on the negative side. There is a bias towards driving straight and turning left.
-![Unbalanced data](assets/unbalanced_data.png)
+### Overall hardware setup:
 
-## Left/Right Camera ~= Parallel Transformation of the car
-The left and right cameras point straight, along the length of the car. So the left and right camera are like parallel transformations of the car.
-![Cameras](assets/cameras.png)
+<p align="center">
+<img width="500" src= "https://github.com/AliBaheri/P3-Writeup/blob/master/images/overal_hw.png">
+(Image credit: Nvidia paper)
 
-# Augmentation Techniques Used
+### Overall software setup:
 
-I have to thank this [NVIDEA paper](http://images.nvidia.com/content/tegra/automotive/images/2016/solutions/pdf/end-to-end-dl-using-px.pdf) and [this blog post](https://chatbotslife.com/using-augmentation-to-mimic-human-driving-496b569760a9#.d779iwp28) for suggesting these techniques.
+<p align="center">
+<img width="600" src= "https://github.com/AliBaheri/P3-Writeup/blob/master/images/overal_sw.png">
+(Image credit: Nvidia paper)
 
-## Use left & right camera images to simulate recovery
-Using left and right camera images to simulate the effect of car wandering off to the side, and recovering. We will add a small angle .25 to the left camera and subtract a small angle of 0.25 from the right camera. The main idea being the left camera has to move right to get to center, and right camera has to move left.
+### Data
 
-## Flip the images horizontally
-Since the dataset has a lot more images with the car turning left than right(because there are more left turns in the track), you can flip the image horizontally to simulate turing right and also reverse the corressponding steering angle.
+During the training, the simulator captures data with a frequency of 10hz. In fact, at a given time step it recorded three images taken from left, center, and right cameras:
 
-## Brightness Adjustment
-In this you adjust the brightness of the image to simulate driving in different lighting conditions
+<p align="center">
+<img width="800" src= "https://github.com/AliBaheri/P3-Writeup/blob/master/images/cameras.png">
 
-With these augmentation techniques, you can practically generate infinite unique images for training your neural network.
 
-![Augmented Images](assets/augmentation.png)
+### Model Architecture and Training Strategy
 
-# Preproceesing Images
-1. I noticed that the hood of the car is visible in the lower portion of the image. We can remove this.
-2. Also the portion above the horizon (where the road ends) can also be ignored.
+The model is based on Nvidia architecture with more dropout layers to prevent overfitting. To deal with a large amount of data, I used data generator to train the model. The images have also been processed using the brightness, shadow augmentation, and flip images techniques using openCV libraries.
 
-After trial and error I figured out that shaving 55 pixels from the top and 25 pixels from the bottom works well.
 
-Finally the image is resized to 64x64. Here is how a sample image could look like:
+<p align="center">
+<img width="350" src= "https://github.com/AliBaheri/P3-Writeup/blob/master/images/model.png">
 
-![**Final Image 64x64x3 image**](assets/resized.png)
+The model utilizes dropout layers to prevent overfitting. The train/validation/test splits have been used in `get_log()`. The model parameters are `batch_size=64` and n`num_epoch=20`. I also used the `Adam` optimizer to optimize the loss function. The model was trained in AWS EC2 from Amazon.
 
-## Data Generation Techniques Used
-Data is augmented and generated on the fly using python generators. So for every epoch, the optimizer practically sees a new and augmented data set.
-
-## Model Architecture
-
-![Model Architecture](assets/model_architecture.png)
-
-1. **Layer 1**: Conv layer with 32 5x5 filters, followed by ELU activation
-2. **Layer 2**: Conv layer with 16 3x3 filters, ELU activation, Dropout(0.4) and 2x2 max pool
-3. **Layer 3**: Conv layer with 16 3x3 filters, ELU activation, Dropout(0.4)
-4. **Layer 4**: Fully connected layer with 1024 neurons, Dropout(0.3) and ELU activation
-5. **Layer 5**: Fully connected layer with 1024 neurons, Dropout(0.3) and ELU activation
-
-## Training Method
-
-1. Optimizer: Adam Optimizer
-2. No. of epochs: 3
-3. Images generated per epoch: 20,000 images generated on the fly
-3. Validation Set: 3000 images, generated on the fly
-4. No test set used, since the success of the model is evaluated by how well it drives on the road and not by test set loss
-5. Keras' `fit_generator` method is used to train images generated by the generator
-
-## Evaluation Video
-
-Click on the image to watch the video or [click here](https://youtu.be/kElUwEoZ7P0). You will be redirected to YouTube.
-
-[![Demo Video](https://img.youtube.com/vi/kElUwEoZ7P0/0.jpg)](https://youtu.be/kElUwEoZ7P0)
+### Conclusion
+While the results are sasitfactory for the first track, the car is not able to successfully run in the jungle track. My plan is to revisit this project to find a solution for the second track.
 
 
