@@ -2,6 +2,10 @@
 
 **Behavioral Cloning Project**
 
+<p align="center">
+<img src="https://github.com/AliBaheri/Advanced_Lane_Lines_SDCND/blob/master/output_video.gif"/>
+
+
 The goals / steps of this project are the following:
 * Use the simulator to collect data of good driving behavior
 * Build, a convolution neural network in Keras that predicts steering angles from images
