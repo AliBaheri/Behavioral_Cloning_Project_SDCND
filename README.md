@@ -1,7 +1,7 @@
 ## **Behavioral Cloning** 
 
 <p align="center">
-<img src="https://github.com/AliBaheri/BehavioralCloning_April2018/blob/master/video.gif"/>
+<img width="400" src="https://github.com/AliBaheri/BehavioralCloning_April2018/blob/master/video.gif"/>
 
 
 **Behavioral Cloning Project**
