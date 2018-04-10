@@ -1,10 +1,10 @@
 ## **Behavioral Cloning** 
 
-**Behavioral Cloning Project**
-
 <p align="center">
 <img src="https://github.com/AliBaheri/BehavioralCloning_April2018/blob/master/video.gif"/>
 
+
+**Behavioral Cloning Project**
 
 The goals / steps of this project are the following:
 * Use the simulator to collect data of good driving behavior
