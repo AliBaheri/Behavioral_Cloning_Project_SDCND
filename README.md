@@ -14,10 +14,10 @@ The goals / steps of this project are the following:
 * Summarize the results with a written report
 
 ### My project includes the following files:
-* model.py containing the script to create and train the model
-* drive.py for driving the car in autonomous mode
-* model.h5 containing a trained convolution neural network 
-* writeup_report.md or writeup_report.pdf summarizing the results
+* `model.py` containing the script to create and train the model
+* `drive.py` for driving the car in autonomous mode
+* `model.h5` containing a trained convolution neural network 
+
 
 ### Overall hardware setup:
 
