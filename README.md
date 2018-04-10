@@ -3,7 +3,7 @@
 **Behavioral Cloning Project**
 
 <p align="center">
-<img src="https://github.com/AliBaheri/Advanced_Lane_Lines_SDCND/blob/master/output_video.gif"/>
+<img src="https://github.com/AliBaheri/BehavioralCloning_April2018/blob/master/video.gif"/>
 
 
 The goals / steps of this project are the following:
