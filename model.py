@@ -153,7 +153,6 @@ def run_the_network():
 # run the network
 run_the_network()
 
-# avoid 'NonType' object of AttributeError.
 backend.clear_session() 
 
-### end of code ###
+
