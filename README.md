@@ -48,7 +48,7 @@ The model is based on Nvidia architecture with more dropout layers to prevent ov
 <p align="center">
 <img width="350" src= "https://github.com/AliBaheri/P3-Writeup/blob/master/images/model.png">
 
-The model utilizes dropout layers to prevent overfitting. The train/validation/test splits have been used in `get_log()`. The model parameters are `batch_size=64` and n`num_epoch=20`. I also used the `Adam` optimizer to optimize the loss function. The model was trained in AWS EC2 from Amazon.
+The train/validation/test splits have been used in `get_log()` method. The model parameters are `batch_size = 64` and n`num_epoch = 20`. I also used the `Adam` optimizer to optimize the loss function. The model was trained in AWS EC2 from Amazon.
 
 ### Conclusion
 While the results are sasitfactory for the first track, the car is not able to successfully run in the second (i.e., jungle) track. My plan is to revisit this project to find a solution for the second track. Furthermore, training a deep reinforcement learning agent would be an intresting future direction.
